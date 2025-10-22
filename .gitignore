@@ -139,4 +139,4 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
 # Relay generated files
-src/__generated__/
+__generated__

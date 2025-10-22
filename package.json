@@ -21,15 +21,15 @@
     "graphql-http": "^1.22.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "react-relay": "^18.2.0",
+    "react-relay": "^20.1.1",
     "react-router-dom": "^7.9.4",
-    "relay-runtime": "^18.2.0"
+    "relay-runtime": "^20.1.1"
   },
   "devDependencies": {
     "@babel/core": "^7.28.4",
     "@vitejs/plugin-react": "^4.7.0",
-    "babel-plugin-relay": "^18.2.0",
-    "relay-compiler": "^18.2.0",
+    "babel-plugin-relay": "^20.1.1",
+    "relay-compiler": "^20.1.1",
     "vite": "^6.4.1"
   }
 }
