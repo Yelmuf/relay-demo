@@ -1,4 +1,4 @@
-# 🎯 TODO App - React 19 + Relay Demo
+# 🎯 TODO App - React + Relay Demo
 
 A modern, full-featured TODO application built with the latest web technologies.
 
@@ -6,10 +6,10 @@ A modern, full-featured TODO application built with the latest web technologies.
 
 ## 🚀 Tech Stack
 
-- **React 19** - Latest stable version of React with improved performance
-- **React Router v7** - Client-side routing
-- **Relay 18** - GraphQL client for efficient data fetching
-- **Vite 6** - Fast build tool and dev server
+- **React** - Latest stable version of React with improved performance
+- **React Router** - Client-side routing
+- **Relay** - GraphQL client for efficient data fetching
+- **Vite** - Fast build tool and dev server
 - **GraphQL** - API query language
 - **Express** - Backend server for GraphQL API
 
@@ -42,7 +42,7 @@ cd relay-demo
 npm install --legacy-peer-deps
 ```
 
-Note: The `--legacy-peer-deps` flag is needed because React 19 is relatively new and some dependencies haven't updated their peer dependency ranges yet.
+Note: The `--legacy-peer-deps` flag is needed because React is relatively new and some dependencies haven't updated their peer dependency ranges yet.
 
 3. Generate Relay artifacts:
 ```bash
@@ -135,7 +135,7 @@ The app uses a GraphQL API with the following operations:
 
 ## 🔑 Key Concepts Demonstrated
 
-1. **React 19 Features** - Uses the latest React stable version
+1. **React Features** - Uses the latest React stable version
 2. **Relay Data Fetching** - Efficient GraphQL queries with fragments
 3. **Mutations** - Create, update, delete operations with Relay
 4. **React Router** - Client-side navigation
@@ -166,6 +166,6 @@ This project is licensed under the ISC License - see the LICENSE file for detail
 
 ## 🙏 Acknowledgments
 
-- React Team for React 19
+- React Team for React
 - Relay Team for the powerful GraphQL client
 - Vite Team for the amazing dev experience
