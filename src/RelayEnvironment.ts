@@ -1,6 +1,6 @@
-import { Environment, Network, RecordSource, Store } from 'relay-runtime';
+import { Environment, Network, RecordSource, Store, RequestParameters, Variables } from 'relay-runtime';
 
-async function fetchGraphQL(text, variables) {
+async function fetchGraphQL(text: string, variables: Variables): Promise<any> {
   const response = await fetch('http://localhost:4000/graphql', {
     method: 'POST',
     headers: {
@@ -15,9 +15,9 @@ async function fetchGraphQL(text, variables) {
   return await response.json();
 }
 
-async function fetchRelay(params, variables) {
+async function fetchRelay(params: RequestParameters, variables: Variables): Promise<any> {
   console.log(`fetching query ${params.name} with ${JSON.stringify(variables)}`);
-  return fetchGraphQL(params.text, variables);
+  return fetchGraphQL(params.text!, variables);
 }
 
 export default new Environment({

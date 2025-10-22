@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import { Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { RelayEnvironmentProvider } from 'react-relay';
 import RelayEnvironment from './RelayEnvironment';

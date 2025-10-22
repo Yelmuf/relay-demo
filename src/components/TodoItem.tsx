@@ -1,7 +1,20 @@
-import React, { useState } from 'react';
+import { useState, KeyboardEvent, ChangeEvent } from 'react';
 import { useMutation } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import './TodoItem.css';
+import type { TodoItemToggleMutation } from './__generated__/TodoItemToggleMutation.graphql';
+import type { TodoItemUpdateMutation } from './__generated__/TodoItemUpdateMutation.graphql';
+import type { TodoItemDeleteMutation } from './__generated__/TodoItemDeleteMutation.graphql';
+
+interface Todo {
+  id: string;
+  text: string;
+  completed: boolean;
+}
+
+interface TodoItemProps {
+  todo: Todo;
+}
 
 const ToggleTodoMutation = graphql`
   mutation TodoItemToggleMutation($input: ToggleTodoInput!) {
@@ -33,13 +46,13 @@ const DeleteTodoMutation = graphql`
   }
 `;
 
-function TodoItem({ todo }) {
+function TodoItem({ todo }: TodoItemProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(todo.text);
   
-  const [commitToggle] = useMutation(ToggleTodoMutation);
-  const [commitUpdate] = useMutation(UpdateTodoMutation);
-  const [commitDelete] = useMutation(DeleteTodoMutation);
+  const [commitToggle] = useMutation<TodoItemToggleMutation>(ToggleTodoMutation);
+  const [commitUpdate] = useMutation<TodoItemUpdateMutation>(UpdateTodoMutation);
+  const [commitDelete] = useMutation<TodoItemDeleteMutation>(DeleteTodoMutation);
 
   const handleToggle = () => {
     commitToggle({
@@ -90,7 +103,7 @@ function TodoItem({ todo }) {
     }
   };
 
-  const handleKeyDown = (e) => {
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       handleUpdate();
     } else if (e.key === 'Escape') {
@@ -112,7 +125,7 @@ function TodoItem({ todo }) {
         <input
           type="text"
           value={editText}
-          onChange={(e) => setEditText(e.target.value)}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => setEditText(e.target.value)}
           onBlur={handleUpdate}
           onKeyDown={handleKeyDown}
           className="todo-edit-input"

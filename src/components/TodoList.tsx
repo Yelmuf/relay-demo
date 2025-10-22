@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import { useState, FormEvent } from 'react';
 import { useLazyLoadQuery, useMutation } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import TodoItem from './TodoItem';
 import './TodoList.css';
+import type { TodoListQuery as TodoListQueryType } from './__generated__/TodoListQuery.graphql';
+import type { TodoListAddMutation } from './__generated__/TodoListAddMutation.graphql';
 
 const TodoListQuery = graphql`
   query TodoListQuery {
@@ -27,11 +29,11 @@ const AddTodoMutation = graphql`
 `;
 
 function TodoList() {
-  const data = useLazyLoadQuery(TodoListQuery, {});
+  const data = useLazyLoadQuery<TodoListQueryType>(TodoListQuery, {});
   const [newTodoText, setNewTodoText] = useState('');
-  const [commitAddTodo, isAddingTodo] = useMutation(AddTodoMutation);
+  const [commitAddTodo, isAddingTodo] = useMutation<TodoListAddMutation>(AddTodoMutation);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!newTodoText.trim()) return;
 
