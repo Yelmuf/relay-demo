@@ -1,0 +1,63 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+type Query {
+  todos: [Todo!]!
+  todo(id: ID!): Todo
+}
+
+type Mutation {
+  addTodo(input: AddTodoInput!): AddTodoPayload!
+  updateTodo(input: UpdateTodoInput!): UpdateTodoPayload!
+  deleteTodo(input: DeleteTodoInput!): DeleteTodoPayload!
+  toggleTodo(input: ToggleTodoInput!): ToggleTodoPayload!
+}
+
+type Todo {
+  id: ID!
+  text: String!
+  completed: Boolean!
+}
+
+input AddTodoInput {
+  text: String!
+  clientMutationId: String
+}
+
+type AddTodoPayload {
+  todo: Todo!
+  clientMutationId: String
+}
+
+input UpdateTodoInput {
+  id: ID!
+  text: String!
+  clientMutationId: String
+}
+
+type UpdateTodoPayload {
+  todo: Todo!
+  clientMutationId: String
+}
+
+input DeleteTodoInput {
+  id: ID!
+  clientMutationId: String
+}
+
+type DeleteTodoPayload {
+  deletedTodoId: ID!
+  clientMutationId: String
+}
+
+input ToggleTodoInput {
+  id: ID!
+  clientMutationId: String
+}
+
+type ToggleTodoPayload {
+  todo: Todo!
+  clientMutationId: String
+}
