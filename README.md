@@ -105,13 +105,12 @@ relay-demo/
 │   ├── schema.graphql    # GraphQL schema definition
 │   └── index.js          # Express + GraphQL server
 ├── tests/
-│   ├── features/         # Gherkin feature files
-│   ├── steps/            # Playwright step definitions
-│   └── setup.js          # Test setup configuration
+│   ├── features/         # Gherkin feature files and step definitions
+│   └── setup.ts          # Test setup configuration
 ├── index.html            # HTML template
-├── vite.config.js        # Vite configuration
-├── vitest.config.js      # Vitest configuration for tests
-├── playwright.config.js  # Playwright configuration
+├── vite.config.ts        # Vite configuration
+├── vitest.config.ts      # Vitest configuration for tests
+├── playwright.config.ts  # Playwright configuration
 ├── relay.config.js       # Relay compiler configuration
 └── package.json          # Dependencies and scripts
 
@@ -154,20 +153,19 @@ pnpm run test:watch
 
 ```
 tests/
-├── features/          # Gherkin feature files
-│   ├── simple.feature # Basic app loading test
-│   └── todo.feature   # TODO functionality tests
-├── steps/             # Step definitions (Playwright)
-│   ├── simple.steps.js
-│   └── todo.steps.js
-└── setup.js          # Test configuration
+├── features/             # Gherkin feature files and step definitions
+│   ├── simple.feature    # Basic app loading test
+│   ├── simple.steps.ts   # Step definitions for simple.feature
+│   ├── todo.feature      # TODO functionality tests
+│   └── todo.steps.ts     # Step definitions for todo.feature
+└── setup.ts              # Test configuration
 ```
 
 ### Writing New Tests
 
 1. Create a new `.feature` file in `tests/features/`
 2. Write scenarios in Gherkin syntax (Given/When/Then)
-3. Implement step definitions in `tests/steps/`
+3. Implement step definitions in `tests/features/` (e.g., `mytest.steps.ts`)
 4. Use Playwright's page object and expect for assertions
 
 Example:
