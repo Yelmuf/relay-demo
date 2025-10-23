@@ -30,7 +30,7 @@ A modern, full-featured TODO application built with the latest web technologies.
 ## 📋 Prerequisites
 
 - Node.js (v18 or higher recommended)
-- npm or yarn
+- pnpm (v8 or higher recommended)
 
 ## 🛠️ Installation
 
@@ -42,14 +42,12 @@ cd relay-demo
 
 2. Install dependencies:
 ```bash
-npm install --legacy-peer-deps
+pnpm install
 ```
-
-Note: The `--legacy-peer-deps` flag is needed because React is relatively new and some dependencies haven't updated their peer dependency ranges yet.
 
 3. Generate Relay artifacts:
 ```bash
-npm run relay
+pnpm run relay
 ```
 
 ## 🏃 Running the Application
@@ -59,17 +57,17 @@ npm run relay
 Start both the GraphQL server and Vite dev server:
 
 ```bash
-npm start
+pnpm start
 ```
 
 Or run them separately:
 
 ```bash
 # Terminal 1 - GraphQL Server
-npm run server
+pnpm run server
 
 # Terminal 2 - Vite Dev Server  
-npm run dev
+pnpm run dev
 ```
 
 The app will be available at:
@@ -80,12 +78,12 @@ The app will be available at:
 
 Build the application:
 ```bash
-npm run build
+pnpm run build
 ```
 
 Preview the production build:
 ```bash
-npm run preview
+pnpm run preview
 ```
 
 ## 📁 Project Structure
@@ -121,15 +119,15 @@ relay-demo/
 
 ## 🔧 Available Scripts
 
-- `npm run dev` - Start Vite development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-- `npm run server` - Start GraphQL server
-- `npm run relay` - Compile Relay GraphQL queries
-- `npm start` - Start both servers (dev mode)
-- `npm test` - Run Gherkin feature tests
-- `npm run test:watch` - Run tests in watch mode
-- `npm run test:ui` - Run tests with Vitest UI
+- `pnpm run dev` - Start Vite development server
+- `pnpm run build` - Build for production
+- `pnpm run preview` - Preview production build
+- `pnpm run server` - Start GraphQL server
+- `pnpm run relay` - Compile Relay GraphQL queries
+- `pnpm start` - Start both servers (dev mode)
+- `pnpm test` - Run Gherkin feature tests
+- `pnpm run test:watch` - Run tests in watch mode
+- `pnpm run test:ui` - Run tests with Vitest UI
 
 ## 🧪 Testing
 
@@ -141,15 +139,15 @@ Make sure both the GraphQL server and Vite dev server are running before executi
 
 ```bash
 # Terminal 1 - Start servers
-npm start
+pnpm start
 
 # Terminal 2 - Run tests
-npm test
+pnpm test
 ```
 
 Or run tests with watch mode:
 ```bash
-npm run test:watch
+pnpm run test:watch
 ```
 
 ### Test Structure
