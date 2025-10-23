@@ -1,10 +1,10 @@
-import { useState, FormEvent } from 'react';
-import { useLazyLoadQuery, useMutation } from 'react-relay';
-import { graphql } from 'relay-runtime';
-import TodoItem from './TodoItem';
-import './TodoList.css';
-import type { TodoListQuery as TodoListQueryType } from './__generated__/TodoListQuery.graphql';
-import type { TodoListAddMutation } from './__generated__/TodoListAddMutation.graphql';
+import { useState, FormEvent } from "react";
+import { useLazyLoadQuery, useMutation } from "react-relay";
+import { graphql } from "relay-runtime";
+import TodoItem from "./TodoItem";
+import "./TodoList.css";
+import type { TodoListQuery as TodoListQueryType } from "./__generated__/TodoListQuery.graphql";
+import type { TodoListAddMutation } from "./__generated__/TodoListAddMutation.graphql";
 
 const TodoListQuery = graphql`
   query TodoListQuery {
@@ -17,7 +17,7 @@ const TodoListQuery = graphql`
 `;
 
 const AddTodoMutation = graphql`
-  mutation TodoListAddMutation($input: AddTodoInput!) {
+  mutation TodoListAddMutation($input: AddTodoInput!) @raw_response_type {
     addTodo(input: $input) {
       todo {
         id
@@ -30,8 +30,9 @@ const AddTodoMutation = graphql`
 
 function TodoList() {
   const data = useLazyLoadQuery<TodoListQueryType>(TodoListQuery, {});
-  const [newTodoText, setNewTodoText] = useState('');
-  const [commitAddTodo, isAddingTodo] = useMutation<TodoListAddMutation>(AddTodoMutation);
+  const [newTodoText, setNewTodoText] = useState("");
+  const [commitAddTodo, isAddingTodo] =
+    useMutation<TodoListAddMutation>(AddTodoMutation);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -43,20 +44,27 @@ function TodoList() {
           text: newTodoText.trim(),
         },
       },
-      onCompleted: () => {
-        setNewTodoText('');
-        // Refresh the page to see the new todo
-        window.location.reload();
+      onCompleted: (response) => {
+        response.addTodo.todo;
+        setNewTodoText("");
       },
       onError: (error) => {
-        console.error('Error adding todo:', error);
+        console.error("Error adding todo:", error);
+      },
+      updater: (store) => {
+        const newTodo = store.getRootField("addTodo")?.getLinkedRecord("todo");
+        if (!newTodo) return;
+
+        const root = store.getRoot();
+        const todos = root.getLinkedRecords("todos") || [];
+        root.setLinkedRecords([...todos, newTodo], "todos");
       },
     });
   };
 
   const todos = data.todos || [];
-  const activeTodos = todos.filter(todo => !todo.completed);
-  const completedTodos = todos.filter(todo => todo.completed);
+  const activeTodos = todos.filter((todo) => !todo.completed);
+  const completedTodos = todos.filter((todo) => todo.completed);
 
   return (
     <div className="todo-list">
@@ -70,7 +78,7 @@ function TodoList() {
           disabled={isAddingTodo}
         />
         <button type="submit" className="todo-button" disabled={isAddingTodo}>
-          {isAddingTodo ? 'Adding...' : 'Add Todo'}
+          {isAddingTodo ? "Adding..." : "Add Todo"}
         </button>
       </form>
 
@@ -87,16 +95,16 @@ function TodoList() {
             {activeTodos.length > 0 && (
               <div className="todo-section">
                 <h3>Active</h3>
-                {activeTodos.map(todo => (
+                {activeTodos.map((todo) => (
                   <TodoItem key={todo.id} todo={todo} />
                 ))}
               </div>
             )}
-            
+
             {completedTodos.length > 0 && (
               <div className="todo-section">
                 <h3>Completed</h3>
-                {completedTodos.map(todo => (
+                {completedTodos.map((todo) => (
                   <TodoItem key={todo.id} todo={todo} />
                 ))}
               </div>

@@ -1,10 +1,10 @@
-import { useState, KeyboardEvent, ChangeEvent } from 'react';
-import { useMutation } from 'react-relay';
-import { graphql } from 'relay-runtime';
-import './TodoItem.css';
-import type { TodoItemToggleMutation } from './__generated__/TodoItemToggleMutation.graphql';
-import type { TodoItemUpdateMutation } from './__generated__/TodoItemUpdateMutation.graphql';
-import type { TodoItemDeleteMutation } from './__generated__/TodoItemDeleteMutation.graphql';
+import { useState, KeyboardEvent, ChangeEvent } from "react";
+import { useMutation } from "react-relay";
+import { graphql } from "relay-runtime";
+import "./TodoItem.css";
+import type { TodoItemToggleMutation } from "./__generated__/TodoItemToggleMutation.graphql";
+import type { TodoItemUpdateMutation } from "./__generated__/TodoItemUpdateMutation.graphql";
+import type { TodoItemDeleteMutation } from "./__generated__/TodoItemDeleteMutation.graphql";
 
 interface Todo {
   id: string;
@@ -41,7 +41,7 @@ const UpdateTodoMutation = graphql`
 const DeleteTodoMutation = graphql`
   mutation TodoItemDeleteMutation($input: DeleteTodoInput!) {
     deleteTodo(input: $input) {
-      deletedTodoId
+      deletedTodoId @deleteRecord
     }
   }
 `;
@@ -49,10 +49,13 @@ const DeleteTodoMutation = graphql`
 function TodoItem({ todo }: TodoItemProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(todo.text);
-  
-  const [commitToggle] = useMutation<TodoItemToggleMutation>(ToggleTodoMutation);
-  const [commitUpdate] = useMutation<TodoItemUpdateMutation>(UpdateTodoMutation);
-  const [commitDelete] = useMutation<TodoItemDeleteMutation>(DeleteTodoMutation);
+
+  const [commitToggle] =
+    useMutation<TodoItemToggleMutation>(ToggleTodoMutation);
+  const [commitUpdate] =
+    useMutation<TodoItemUpdateMutation>(UpdateTodoMutation);
+  const [commitDelete] =
+    useMutation<TodoItemDeleteMutation>(DeleteTodoMutation);
 
   const handleToggle = () => {
     commitToggle({
@@ -60,9 +63,6 @@ function TodoItem({ todo }: TodoItemProps) {
         input: {
           id: todo.id,
         },
-      },
-      onCompleted: () => {
-        window.location.reload();
       },
     });
   };
@@ -83,63 +83,85 @@ function TodoItem({ todo }: TodoItemProps) {
       },
       onCompleted: () => {
         setIsEditing(false);
-        window.location.reload();
+      },
+      optimisticResponse: {
+        updateTodo: {
+          todo: {
+            id: todo.id,
+            text: editText.trim(),
+          },
+        },
       },
     });
   };
 
   const handleDelete = () => {
-    if (window.confirm('Are you sure you want to delete this todo?')) {
+    if (window.confirm("Are you sure you want to delete this todo?")) {
       commitDelete({
         variables: {
           input: {
             id: todo.id,
           },
         },
-        onCompleted: () => {
-          window.location.reload();
+        updater: (store) => {
+          const todos = store.getRoot().getLinkedRecords("todos") || [];
+          const updatedTodos = todos.filter(
+            (t) => !!t && t.getDataID() !== todo.id,
+          );
+          store.getRoot().setLinkedRecords(updatedTodos, "todos");
+        },
+        optimisticResponse: {
+          deleteTodo: {
+            deletedTodoId: todo.id,
+          },
+        },
+        optimisticUpdater: (store) => {
+          const todos = store.getRoot().getLinkedRecords("todos") || [];
+          const updatedTodos = todos.filter(
+            (t) => !!t && t.getDataID() !== todo.id,
+          );
+          store.getRoot().setLinkedRecords(updatedTodos, "todos");
         },
       });
     }
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       handleUpdate();
-    } else if (e.key === 'Escape') {
+    } else if (e.key === "Escape") {
       setEditText(todo.text);
       setIsEditing(false);
     }
   };
 
   return (
-    <div className={`todo-item ${todo.completed ? 'completed' : ''}`}>
+    <div className={`todo-item ${todo.completed ? "completed" : ""}`}>
       <input
         type="checkbox"
         checked={todo.completed}
         onChange={handleToggle}
         className="todo-checkbox"
       />
-      
+
       {isEditing ? (
         <input
           type="text"
           value={editText}
-          onChange={(e: ChangeEvent<HTMLInputElement>) => setEditText(e.target.value)}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setEditText(e.target.value)
+          }
           onBlur={handleUpdate}
           onKeyDown={handleKeyDown}
           className="todo-edit-input"
           autoFocus
         />
       ) : (
-        <span
-          className="todo-text"
-          onDoubleClick={() => setIsEditing(true)}
-        >
+        <span className="todo-text" onDoubleClick={() => setIsEditing(true)}>
           {todo.text}
         </span>
       )}
-      
+
       <div className="todo-actions">
         {!isEditing && (
           <>
