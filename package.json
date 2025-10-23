@@ -10,7 +10,10 @@
     "server": "tsx server/index.ts",
     "relay": "relay-compiler",
     "start": "npm run server & npm run dev",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui"
   },
   "keywords": [],
   "author": "",
@@ -28,6 +31,8 @@
   },
   "devDependencies": {
     "@babel/core": "^7.28.4",
+    "@playwright/test": "^1.56.1",
+    "@quickpickle/playwright": "^1.0.0",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/node": "^24.9.1",
@@ -37,9 +42,11 @@
     "@types/relay-runtime": "^19.0.3",
     "@vitejs/plugin-react": "^4.7.0",
     "babel-plugin-relay": "^20.1.1",
+    "quickpickle": "^1.10.1",
     "relay-compiler": "^20.1.1",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3",
-    "vite": "^6.4.1"
+    "vite": "^6.4.1",
+    "vitest": "^2.1.9"
   }
 }

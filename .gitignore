@@ -50,6 +50,10 @@ web_modules/
 # Optional npm cache directory
 .npm
 
+# Lock files - use pnpm-lock.yaml only
+package-lock.json
+yarn.lock
+
 # Optional eslint cache
 .eslintcache
 
@@ -140,3 +144,9 @@ vite.config.ts.timestamp-*
 
 # Relay generated files
 __generated__
+
+# Test artifacts
+test-results/
+playwright-report/
+.quickpickle/
+blob-report/

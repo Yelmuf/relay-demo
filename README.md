@@ -12,6 +12,9 @@ A modern, full-featured TODO application built with the latest web technologies.
 - **Vite** - Fast build tool and dev server
 - **GraphQL** - API query language
 - **Express** - Backend server for GraphQL API
+- **QuickPickle** - Gherkin/Cucumber BDD testing with Vitest
+- **Playwright** - Browser automation for E2E testing
+- **Vitest** - Fast unit test framework
 
 ## ✨ Features
 
@@ -27,7 +30,7 @@ A modern, full-featured TODO application built with the latest web technologies.
 ## 📋 Prerequisites
 
 - Node.js (v18 or higher recommended)
-- npm or yarn
+- pnpm (v8 or higher recommended)
 
 ## 🛠️ Installation
 
@@ -39,14 +42,12 @@ cd relay-demo
 
 2. Install dependencies:
 ```bash
-npm install --legacy-peer-deps
+pnpm install
 ```
-
-Note: The `--legacy-peer-deps` flag is needed because React is relatively new and some dependencies haven't updated their peer dependency ranges yet.
 
 3. Generate Relay artifacts:
 ```bash
-npm run relay
+pnpm run relay
 ```
 
 ## 🏃 Running the Application
@@ -56,17 +57,17 @@ npm run relay
 Start both the GraphQL server and Vite dev server:
 
 ```bash
-npm start
+pnpm start
 ```
 
 Or run them separately:
 
 ```bash
 # Terminal 1 - GraphQL Server
-npm run server
+pnpm run server
 
 # Terminal 2 - Vite Dev Server  
-npm run dev
+pnpm run dev
 ```
 
 The app will be available at:
@@ -77,12 +78,12 @@ The app will be available at:
 
 Build the application:
 ```bash
-npm run build
+pnpm run build
 ```
 
 Preview the production build:
 ```bash
-npm run preview
+pnpm run preview
 ```
 
 ## 📁 Project Structure
@@ -103,8 +104,14 @@ relay-demo/
 ├── server/
 │   ├── schema.graphql    # GraphQL schema definition
 │   └── index.js          # Express + GraphQL server
+├── tests/
+│   ├── features/         # Gherkin feature files
+│   ├── steps/            # Playwright step definitions
+│   └── setup.js          # Test setup configuration
 ├── index.html            # HTML template
 ├── vite.config.js        # Vite configuration
+├── vitest.config.js      # Vitest configuration for tests
+├── playwright.config.js  # Playwright configuration
 ├── relay.config.js       # Relay compiler configuration
 └── package.json          # Dependencies and scripts
 
@@ -112,12 +119,65 @@ relay-demo/
 
 ## 🔧 Available Scripts
 
-- `npm run dev` - Start Vite development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-- `npm run server` - Start GraphQL server
-- `npm run relay` - Compile Relay GraphQL queries
-- `npm start` - Start both servers (dev mode)
+- `pnpm run dev` - Start Vite development server
+- `pnpm run build` - Build for production
+- `pnpm run preview` - Preview production build
+- `pnpm run server` - Start GraphQL server
+- `pnpm run relay` - Compile Relay GraphQL queries
+- `pnpm start` - Start both servers (dev mode)
+- `pnpm test` - Run Gherkin feature tests
+- `pnpm run test:watch` - Run tests in watch mode
+- `pnpm run test:ui` - Run tests with Vitest UI
+
+## 🧪 Testing
+
+This project includes end-to-end tests written in Gherkin syntax using QuickPickle (a Vitest plugin) and Playwright.
+
+### Running Tests
+
+Make sure both the GraphQL server and Vite dev server are running before executing tests:
+
+```bash
+# Terminal 1 - Start servers
+pnpm start
+
+# Terminal 2 - Run tests
+pnpm test
+```
+
+Or run tests with watch mode:
+```bash
+pnpm run test:watch
+```
+
+### Test Structure
+
+```
+tests/
+├── features/          # Gherkin feature files
+│   ├── simple.feature # Basic app loading test
+│   └── todo.feature   # TODO functionality tests
+├── steps/             # Step definitions (Playwright)
+│   ├── simple.steps.js
+│   └── todo.steps.js
+└── setup.js          # Test configuration
+```
+
+### Writing New Tests
+
+1. Create a new `.feature` file in `tests/features/`
+2. Write scenarios in Gherkin syntax (Given/When/Then)
+3. Implement step definitions in `tests/steps/`
+4. Use Playwright's page object and expect for assertions
+
+Example:
+```gherkin
+Feature: My Feature
+  Scenario: Test something
+    Given I am on the homepage
+    When I click a button
+    Then I should see a result
+```
 
 ## 🎨 GraphQL Schema
 
@@ -141,6 +201,9 @@ The app uses a GraphQL API with the following operations:
 4. **React Router** - Client-side navigation
 5. **Vite Configuration** - Modern build setup with Babel plugin
 6. **GraphQL Server** - Express server with graphql-http
+7. **BDD Testing** - Behavior-driven development with Gherkin syntax
+8. **E2E Testing** - End-to-end browser tests with Playwright
+9. **Test Automation** - Automated UI testing with QuickPickle and Vitest
 
 ## 📝 How It Works
 
