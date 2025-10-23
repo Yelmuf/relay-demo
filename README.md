@@ -12,6 +12,9 @@ A modern, full-featured TODO application built with the latest web technologies.
 - **Vite** - Fast build tool and dev server
 - **GraphQL** - API query language
 - **Express** - Backend server for GraphQL API
+- **QuickPickle** - Gherkin/Cucumber BDD testing with Vitest
+- **Playwright** - Browser automation for E2E testing
+- **Vitest** - Fast unit test framework
 
 ## ✨ Features
 
@@ -103,8 +106,14 @@ relay-demo/
 ├── server/
 │   ├── schema.graphql    # GraphQL schema definition
 │   └── index.js          # Express + GraphQL server
+├── tests/
+│   ├── features/         # Gherkin feature files
+│   ├── steps/            # Playwright step definitions
+│   └── setup.js          # Test setup configuration
 ├── index.html            # HTML template
 ├── vite.config.js        # Vite configuration
+├── vitest.config.js      # Vitest configuration for tests
+├── playwright.config.js  # Playwright configuration
 ├── relay.config.js       # Relay compiler configuration
 └── package.json          # Dependencies and scripts
 
@@ -118,6 +127,59 @@ relay-demo/
 - `npm run server` - Start GraphQL server
 - `npm run relay` - Compile Relay GraphQL queries
 - `npm start` - Start both servers (dev mode)
+- `npm test` - Run Gherkin feature tests
+- `npm run test:watch` - Run tests in watch mode
+- `npm run test:ui` - Run tests with Vitest UI
+
+## 🧪 Testing
+
+This project includes end-to-end tests written in Gherkin syntax using QuickPickle (a Vitest plugin) and Playwright.
+
+### Running Tests
+
+Make sure both the GraphQL server and Vite dev server are running before executing tests:
+
+```bash
+# Terminal 1 - Start servers
+npm start
+
+# Terminal 2 - Run tests
+npm test
+```
+
+Or run tests with watch mode:
+```bash
+npm run test:watch
+```
+
+### Test Structure
+
+```
+tests/
+├── features/          # Gherkin feature files
+│   ├── simple.feature # Basic app loading test
+│   └── todo.feature   # TODO functionality tests
+├── steps/             # Step definitions (Playwright)
+│   ├── simple.steps.js
+│   └── todo.steps.js
+└── setup.js          # Test configuration
+```
+
+### Writing New Tests
+
+1. Create a new `.feature` file in `tests/features/`
+2. Write scenarios in Gherkin syntax (Given/When/Then)
+3. Implement step definitions in `tests/steps/`
+4. Use Playwright's page object and expect for assertions
+
+Example:
+```gherkin
+Feature: My Feature
+  Scenario: Test something
+    Given I am on the homepage
+    When I click a button
+    Then I should see a result
+```
 
 ## 🎨 GraphQL Schema
 
@@ -141,6 +203,9 @@ The app uses a GraphQL API with the following operations:
 4. **React Router** - Client-side navigation
 5. **Vite Configuration** - Modern build setup with Babel plugin
 6. **GraphQL Server** - Express server with graphql-http
+7. **BDD Testing** - Behavior-driven development with Gherkin syntax
+8. **E2E Testing** - End-to-end browser tests with Playwright
+9. **Test Automation** - Automated UI testing with QuickPickle and Vitest
 
 ## 📝 How It Works
 
