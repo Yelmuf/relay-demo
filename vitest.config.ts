@@ -22,7 +22,7 @@ export default defineConfig({
   ],
   test: {
     include: ['tests/**/*.feature'],
-    setupFiles: ['./tests/setup.js'],
+    setupFiles: ['./tests/setup.ts'],
     testTimeout: 60000,
     hookTimeout: 30000,
   },
