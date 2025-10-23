@@ -1,9 +1,9 @@
-import { Suspense } from 'react';
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
-import { RelayEnvironmentProvider } from 'react-relay';
-import RelayEnvironment from './RelayEnvironment';
-import TodoList from './components/TodoList';
-import './App.css';
+import { Suspense } from "react";
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { RelayEnvironmentProvider } from "react-relay";
+import RelayEnvironment from "./RelayEnvironment";
+import TodoList from "./components/TodoList";
+import "./App.css";
 
 function App() {
   return (
@@ -12,11 +12,15 @@ function App() {
         <div className="app">
           <header className="app-header">
             <h1>🎯 TODO App</h1>
-            <p className="subtitle">Built with React 19, React Router, and Relay</p>
+            <p className="subtitle">
+              Built with React 19, React Router, and Relay
+            </p>
           </header>
-          
+
           <nav className="app-nav">
-            <Link to="/" className="nav-link">All Todos</Link>
+            <Link to="/" className="nav-link">
+              All Todos
+            </Link>
           </nav>
 
           <main className="app-main">
