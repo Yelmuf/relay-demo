@@ -1,5 +1,7 @@
-import { setWorldConstructor } from 'quickpickle';
-import { PlaywrightWorld } from '@quickpickle/playwright';
+// Import the default PlaywrightWorld constructor
+// This sets up the world automatically for Playwright testing
+import '@quickpickle/playwright/world';
 
-// Set up Playwright world for browser testing
-setWorldConstructor(PlaywrightWorld);
+// Import step definitions
+import './steps/simple.steps.js';
+import './steps/todo.steps.js';

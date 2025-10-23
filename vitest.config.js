@@ -10,14 +10,20 @@ export default defineConfig({
       },
     }),
     quickpickle({
-      explodeTags: [
-        { tag: '@focus', name: 'only' },
-      ],
+      worldConfig: {
+        playwright: {
+          launchOptions: {
+            headless: true,
+            args: ['--no-sandbox', '--disable-setuid-sandbox'],
+          },
+        },
+      },
     }),
   ],
   test: {
-    include: ['**/*.feature'],
+    include: ['tests/**/*.feature'],
     setupFiles: ['./tests/setup.js'],
     testTimeout: 60000,
+    hookTimeout: 30000,
   },
 });
