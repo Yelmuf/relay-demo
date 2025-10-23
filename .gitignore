@@ -140,3 +140,9 @@ vite.config.ts.timestamp-*
 
 # Relay generated files
 __generated__
+
+# Test artifacts
+test-results/
+playwright-report/
+.quickpickle/
+blob-report/
