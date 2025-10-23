@@ -25,7 +25,7 @@ When('I click the {string} button', async function(world, buttonText) {
 });
 
 Then('I should see {string} in the todo list', async function(world, todoText) {
-  await expect(world.page.locator('.todo-text', { hasText: todoText })).toBeVisible();
+  await expect(world.page.locator('.todo-text', { hasText: todoText }).first()).toBeVisible();
 });
 
 Then('the active count should be {int}', async function(world, count) {
@@ -46,19 +46,19 @@ Given('I have added a todo {string}', async function(world, todoText) {
 });
 
 When('I toggle the todo checkbox for {string}', async function(world, todoText) {
-  const todoItem = world.page.locator('.todo-item', { has: world.page.locator('.todo-text', { hasText: todoText }) });
+  const todoItem = world.page.locator('.todo-item', { has: world.page.locator('.todo-text', { hasText: todoText }) }).first();
   await todoItem.locator('input[type="checkbox"]').click();
   await world.page.waitForLoadState('networkidle');
 });
 
 Then('the todo {string} should be marked as completed', async function(world, todoText) {
-  const todoItem = world.page.locator('.todo-item', { has: world.page.locator('.todo-text', { hasText: todoText }) });
+  const todoItem = world.page.locator('.todo-item', { has: world.page.locator('.todo-text', { hasText: todoText }) }).first();
   await expect(todoItem).toHaveClass(/completed/);
 });
 
 // Edit a todo
 When('I double-click on the todo {string}', async function(world, todoText) {
-  const todoTextElement = world.page.locator('.todo-text', { hasText: todoText });
+  const todoTextElement = world.page.locator('.todo-text', { hasText: todoText }).first();
   await todoTextElement.dblclick();
 });
 
@@ -73,22 +73,27 @@ When('I press Enter', async function(world) {
 });
 
 Then('I should not see {string} in the todo list', async function(world, todoText) {
-  await expect(world.page.locator('.todo-text', { hasText: todoText })).not.toBeVisible();
+  // Wait for the element to be removed from the DOM
+  await expect(world.page.locator('.todo-text', { hasText: todoText })).toHaveCount(0);
 });
 
 // Delete a todo
 When('I click the delete button for {string}', async function(world, todoText) {
-  const todoItem = world.page.locator('.todo-item', { has: world.page.locator('.todo-text', { hasText: todoText }) });
+  const todoItem = world.page.locator('.todo-item', { has: world.page.locator('.todo-text', { hasText: todoText }) }).first();
   const deleteButton = todoItem.locator('button.todo-action-button.delete');
-  await deleteButton.click();
-});
-
-When('I confirm the deletion', async function(world) {
-  // Handle the browser's confirm dialog
+  
+  // Set up dialog handler before clicking
   world.page.once('dialog', async dialog => {
     expect(dialog.type()).toBe('confirm');
     await dialog.accept();
   });
+  
+  await deleteButton.click();
+});
+
+When('I confirm the deletion', async function(world) {
+  // The dialog was already triggered by clicking delete button
+  // Just wait for the page reload after confirmation
   await world.page.waitForLoadState('networkidle');
 });
 
