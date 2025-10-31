@@ -1,6 +1,7 @@
 import { useState, KeyboardEvent, ChangeEvent } from "react";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
+import { TODO_ITEM_CONSTANTS } from "../constants";
 import "./TodoItem.css";
 import type { TodoItemToggleMutation } from "./__generated__/TodoItemToggleMutation.graphql";
 import type { TodoItemUpdateMutation } from "./__generated__/TodoItemUpdateMutation.graphql";
@@ -96,7 +97,7 @@ function TodoItem({ todo }: TodoItemProps) {
   };
 
   const handleDelete = () => {
-    if (window.confirm("Are you sure you want to delete this todo?")) {
+    if (window.confirm(TODO_ITEM_CONSTANTS.CONFIRM_DELETE)) {
       commitDelete({
         variables: {
           input: {
@@ -168,14 +169,14 @@ function TodoItem({ todo }: TodoItemProps) {
             <button
               onClick={() => setIsEditing(true)}
               className="todo-action-button edit"
-              title="Edit"
+              title={TODO_ITEM_CONSTANTS.BUTTON_EDIT_TITLE}
             >
               ✏️
             </button>
             <button
               onClick={handleDelete}
               className="todo-action-button delete"
-              title="Delete"
+              title={TODO_ITEM_CONSTANTS.BUTTON_DELETE_TITLE}
             >
               🗑️
             </button>
