@@ -129,7 +129,7 @@ function TodoItem({ todo }: TodoItemProps) {
     }
   };
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+  const handleInputKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       handleUpdate();
     } else if (e.key === "Escape") {
@@ -140,6 +140,13 @@ function TodoItem({ todo }: TodoItemProps) {
 
   const handleClick = () => {
     if (!isEditing) {
+      navigate(`/todo/${todo.id}`);
+    }
+  };
+
+  const handleTextKeyDown = (e: KeyboardEvent<HTMLSpanElement>) => {
+    if ((e.key === "Enter" || e.key === " ") && !isEditing) {
+      e.preventDefault();
       navigate(`/todo/${todo.id}`);
     }
   };
@@ -163,7 +170,7 @@ function TodoItem({ todo }: TodoItemProps) {
             setEditText(e.target.value)
           }
           onBlur={handleUpdate}
-          onKeyDown={handleKeyDown}
+          onKeyDown={handleInputKeyDown}
           className="todo-edit-input"
           autoFocus
         />
@@ -172,6 +179,9 @@ function TodoItem({ todo }: TodoItemProps) {
           className="todo-text"
           onDoubleClick={() => setIsEditing(true)}
           onClick={handleClick}
+          onKeyDown={handleTextKeyDown}
+          role="button"
+          tabIndex={0}
         >
           {todo.text}
         </span>

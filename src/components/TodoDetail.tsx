@@ -1,10 +1,12 @@
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useLazyLoadQuery, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import "./TodoDetail.css";
 import type { TodoDetailQuery as TodoDetailQueryType } from "./__generated__/TodoDetailQuery.graphql";
 import type { TodoDetailUpdateMutation } from "./__generated__/TodoDetailUpdateMutation.graphql";
+
+const MAX_ICON_LENGTH = 10;
 
 const TodoDetailQuery = graphql`
   query TodoDetailQuery($id: ID!) {
@@ -34,9 +36,14 @@ const UpdateTodoMutation = graphql`
 function TodoDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  
+
+  useEffect(() => {
+    if (!id) {
+      navigate("/");
+    }
+  }, [id, navigate]);
+
   if (!id) {
-    navigate("/");
     return null;
   }
 
@@ -74,12 +81,9 @@ function TodoDetail() {
         input: {
           id: todo.id,
           text: todo.text,
-          icon: icon || undefined,
-          description: description || undefined,
+          icon: icon.trim() || undefined,
+          description: description.trim() || undefined,
         },
-      },
-      onCompleted: () => {
-        console.log("Todo updated successfully");
       },
       onError: (error) => {
         console.error("Error updating todo:", error);
@@ -121,7 +125,7 @@ function TodoDetail() {
               onChange={(e) => setIcon(e.target.value)}
               placeholder="e.g., 🎯 📝 ✨"
               className="todo-detail-input"
-              maxLength={10}
+              maxLength={MAX_ICON_LENGTH}
             />
           </div>
 
