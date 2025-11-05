@@ -145,7 +145,7 @@ function TodoItem({ todo }: TodoItemProps) {
   };
 
   const handleTextKeyDown = (e: KeyboardEvent<HTMLSpanElement>) => {
-    if ((e.key === "Enter" || e.key === " ") && !isEditing) {
+    if (!isEditing && (e.key === "Enter" || e.key === " ")) {
       e.preventDefault();
       navigate(`/todo/${todo.id}`);
     }
