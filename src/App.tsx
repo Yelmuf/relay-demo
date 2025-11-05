@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import { RelayEnvironmentProvider } from "react-relay";
 import RelayEnvironment from "./RelayEnvironment";
 import TodoList from "./components/TodoList";
+import TodoDetail from "./components/TodoDetail";
 import "./App.css";
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
             <Suspense fallback={<div className="loading">Loading...</div>}>
               <Routes>
                 <Route path="/" element={<TodoList />} />
+                <Route path="/todo/:id" element={<><TodoList /><TodoDetail /></>} />
               </Routes>
             </Suspense>
           </main>

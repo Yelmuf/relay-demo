@@ -1,4 +1,5 @@
 import { useState, KeyboardEvent, ChangeEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import "./TodoItem.css";
@@ -10,6 +11,7 @@ interface Todo {
   id: string;
   text: string;
   completed: boolean;
+  icon?: string | null;
 }
 
 interface TodoItemProps {
@@ -47,6 +49,7 @@ const DeleteTodoMutation = graphql`
 `;
 
 function TodoItem({ todo }: TodoItemProps) {
+  const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(todo.text);
 
@@ -135,6 +138,12 @@ function TodoItem({ todo }: TodoItemProps) {
     }
   };
 
+  const handleClick = () => {
+    if (!isEditing) {
+      navigate(`/todo/${todo.id}`);
+    }
+  };
+
   return (
     <div className={`todo-item ${todo.completed ? "completed" : ""}`}>
       <input
@@ -143,6 +152,8 @@ function TodoItem({ todo }: TodoItemProps) {
         onChange={handleToggle}
         className="todo-checkbox"
       />
+
+      {todo.icon && <span className="todo-icon">{todo.icon}</span>}
 
       {isEditing ? (
         <input
@@ -157,7 +168,11 @@ function TodoItem({ todo }: TodoItemProps) {
           autoFocus
         />
       ) : (
-        <span className="todo-text" onDoubleClick={() => setIsEditing(true)}>
+        <span
+          className="todo-text"
+          onDoubleClick={() => setIsEditing(true)}
+          onClick={handleClick}
+        >
           {todo.text}
         </span>
       )}

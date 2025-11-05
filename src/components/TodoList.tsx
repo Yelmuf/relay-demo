@@ -12,6 +12,7 @@ const TodoListQuery = graphql`
       id
       text
       completed
+      icon
     }
   }
 `;
@@ -23,6 +24,7 @@ const AddTodoMutation = graphql`
         id
         text
         completed
+        icon
       }
     }
   }

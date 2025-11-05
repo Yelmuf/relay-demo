@@ -19,16 +19,22 @@ interface Todo {
   id: string;
   text: string;
   completed: boolean;
+  icon?: string;
+  description?: string;
 }
 
 interface AddTodoInput {
   text: string;
+  icon?: string;
+  description?: string;
   clientMutationId?: string;
 }
 
 interface UpdateTodoInput {
   id: string;
   text: string;
+  icon?: string;
+  description?: string;
   clientMutationId?: string;
 }
 
@@ -62,6 +68,8 @@ const root = {
       id: String(nextId++),
       text: input.text,
       completed: false,
+      icon: input.icon,
+      description: input.description,
     };
     todos.push(todo);
     return {
@@ -76,6 +84,12 @@ const root = {
       throw new Error(`Todo with id ${input.id} not found`);
     }
     todo.text = input.text;
+    if (input.icon !== undefined) {
+      todo.icon = input.icon;
+    }
+    if (input.description !== undefined) {
+      todo.description = input.description;
+    }
     return {
       todo,
       clientMutationId: input.clientMutationId,

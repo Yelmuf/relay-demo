@@ -1,0 +1,155 @@
+import { useState, FormEvent } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useLazyLoadQuery, useMutation } from "react-relay";
+import { graphql } from "relay-runtime";
+import "./TodoDetail.css";
+import type { TodoDetailQuery as TodoDetailQueryType } from "./__generated__/TodoDetailQuery.graphql";
+import type { TodoDetailUpdateMutation } from "./__generated__/TodoDetailUpdateMutation.graphql";
+
+const TodoDetailQuery = graphql`
+  query TodoDetailQuery($id: ID!) {
+    todo(id: $id) {
+      id
+      text
+      completed
+      icon
+      description
+    }
+  }
+`;
+
+const UpdateTodoMutation = graphql`
+  mutation TodoDetailUpdateMutation($input: UpdateTodoInput!) {
+    updateTodo(input: $input) {
+      todo {
+        id
+        text
+        icon
+        description
+      }
+    }
+  }
+`;
+
+function TodoDetail() {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  
+  if (!id) {
+    navigate("/");
+    return null;
+  }
+
+  const data = useLazyLoadQuery<TodoDetailQueryType>(TodoDetailQuery, { id });
+  const [commitUpdate, isUpdating] =
+    useMutation<TodoDetailUpdateMutation>(UpdateTodoMutation);
+
+  const todo = data.todo;
+
+  if (!todo) {
+    return (
+      <div className="todo-detail-panel">
+        <div className="todo-detail-header">
+          <h2>Todo Not Found</h2>
+          <button onClick={() => navigate("/")} className="close-button">
+            ✕
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const [icon, setIcon] = useState(todo.icon || "");
+  const [description, setDescription] = useState(todo.description || "");
+
+  const handleClose = () => {
+    navigate("/");
+  };
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    commitUpdate({
+      variables: {
+        input: {
+          id: todo.id,
+          text: todo.text,
+          icon: icon || undefined,
+          description: description || undefined,
+        },
+      },
+      onCompleted: () => {
+        console.log("Todo updated successfully");
+      },
+      onError: (error) => {
+        console.error("Error updating todo:", error);
+      },
+    });
+  };
+
+  return (
+    <div className="todo-detail-panel">
+      <div className="todo-detail-header">
+        <h2>Todo Details</h2>
+        <button onClick={handleClose} className="close-button">
+          ✕
+        </button>
+      </div>
+
+      <div className="todo-detail-content">
+        <div className="todo-detail-field">
+          <label className="todo-detail-label">Task</label>
+          <div className="todo-detail-text">{todo.text}</div>
+        </div>
+
+        <div className="todo-detail-field">
+          <label className="todo-detail-label">Status</label>
+          <div className="todo-detail-text">
+            {todo.completed ? "✓ Completed" : "○ Active"}
+          </div>
+        </div>
+
+        <form onSubmit={handleSubmit} className="todo-detail-form">
+          <div className="todo-detail-field">
+            <label htmlFor="icon" className="todo-detail-label">
+              Icon (emoji)
+            </label>
+            <input
+              id="icon"
+              type="text"
+              value={icon}
+              onChange={(e) => setIcon(e.target.value)}
+              placeholder="e.g., 🎯 📝 ✨"
+              className="todo-detail-input"
+              maxLength={10}
+            />
+          </div>
+
+          <div className="todo-detail-field">
+            <label htmlFor="description" className="todo-detail-label">
+              Description
+            </label>
+            <textarea
+              id="description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Add more details about this todo..."
+              className="todo-detail-textarea"
+              rows={5}
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="todo-detail-save-button"
+            disabled={isUpdating}
+          >
+            {isUpdating ? "Saving..." : "Save Changes"}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+export default TodoDetail;

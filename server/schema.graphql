@@ -19,10 +19,14 @@ type Todo {
   id: ID!
   text: String!
   completed: Boolean!
+  icon: String
+  description: String
 }
 
 input AddTodoInput {
   text: String!
+  icon: String
+  description: String
   clientMutationId: String
 }
 
@@ -34,6 +38,8 @@ type AddTodoPayload {
 input UpdateTodoInput {
   id: ID!
   text: String!
+  icon: String
+  description: String
   clientMutationId: String
 }
 
