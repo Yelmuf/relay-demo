@@ -66,8 +66,13 @@ function TodoDetail() {
     );
   }
 
-  const [icon, setIcon] = useState(todo.icon || "");
-  const [description, setDescription] = useState(todo.description || "");
+  const [icon, setIcon] = useState("");
+  const [description, setDescription] = useState("");
+
+  useEffect(() => {
+    setIcon(todo.icon || "");
+    setDescription(todo.description || "");
+  }, [todo.icon, todo.description]);
 
   const handleClose = () => {
     navigate("/");
