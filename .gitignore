@@ -150,3 +150,9 @@ test-results/
 playwright-report/
 .quickpickle/
 blob-report/
+
+# SQLite database files
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
