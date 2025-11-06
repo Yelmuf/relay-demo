@@ -12,10 +12,12 @@ const TodoDetailQuery = graphql`
   query TodoDetailQuery($id: ID!) {
     todo(id: $id) {
       id
-      text
       completed
       icon
-      description
+      description {
+        short
+        long
+      }
     }
   }
 `;
@@ -25,9 +27,11 @@ const UpdateTodoMutation = graphql`
     updateTodo(input: $input) {
       todo {
         id
-        text
         icon
-        description
+        description {
+          short
+          long
+        }
       }
     }
   }
@@ -67,12 +71,12 @@ function TodoDetail() {
   }
 
   const [icon, setIcon] = useState("");
-  const [description, setDescription] = useState("");
+  const [longDescription, setLongDescription] = useState("");
 
   useEffect(() => {
     setIcon(todo.icon || "");
-    setDescription(todo.description || "");
-  }, [todo.icon, todo.description]);
+    setLongDescription(todo.description.long || "");
+  }, [todo.icon, todo.description.long]);
 
   const handleClose = () => {
     navigate("/");
@@ -85,9 +89,9 @@ function TodoDetail() {
       variables: {
         input: {
           id: todo.id,
-          text: todo.text,
+          short: todo.description.short,
           icon: icon.trim() || undefined,
-          description: description.trim() || undefined,
+          long: longDescription.trim() || undefined,
         },
       },
       onError: (error) => {
@@ -106,11 +110,6 @@ function TodoDetail() {
       </div>
 
       <div className="todo-detail-content">
-        <div className="todo-detail-field">
-          <label className="todo-detail-label">Task</label>
-          <div className="todo-detail-text">{todo.text}</div>
-        </div>
-
         <div className="todo-detail-field">
           <label className="todo-detail-label">Status</label>
           <div className="todo-detail-text">
@@ -135,13 +134,13 @@ function TodoDetail() {
           </div>
 
           <div className="todo-detail-field">
-            <label htmlFor="description" className="todo-detail-label">
-              Description
+            <label htmlFor="longDescription" className="todo-detail-label">
+              Long Description
             </label>
             <textarea
-              id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              id="longDescription"
+              value={longDescription}
+              onChange={(e) => setLongDescription(e.target.value)}
               placeholder="Add more details about this todo..."
               className="todo-detail-textarea"
               rows={5}

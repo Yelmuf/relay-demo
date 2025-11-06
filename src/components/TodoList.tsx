@@ -10,9 +10,11 @@ const TodoListQuery = graphql`
   query TodoListQuery {
     todos {
       id
-      text
       completed
       icon
+      description {
+        short
+      }
     }
   }
 `;
@@ -22,9 +24,11 @@ const AddTodoMutation = graphql`
     addTodo(input: $input) {
       todo {
         id
-        text
         completed
         icon
+        description {
+          short
+        }
       }
     }
   }
@@ -43,7 +47,7 @@ function TodoList() {
     commitAddTodo({
       variables: {
         input: {
-          text: newTodoText.trim(),
+          short: newTodoText.trim(),
         },
       },
       onCompleted: (response) => {

@@ -9,9 +9,11 @@ import type { TodoItemDeleteMutation } from "./__generated__/TodoItemDeleteMutat
 
 interface Todo {
   id: string;
-  text: string;
   completed: boolean;
   icon?: string | null;
+  description: {
+    short: string;
+  };
 }
 
 interface TodoItemProps {
@@ -34,7 +36,9 @@ const UpdateTodoMutation = graphql`
     updateTodo(input: $input) {
       todo {
         id
-        text
+        description {
+          short
+        }
       }
     }
   }
@@ -51,7 +55,7 @@ const DeleteTodoMutation = graphql`
 function TodoItem({ todo }: TodoItemProps) {
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
-  const [editText, setEditText] = useState(todo.text);
+  const [editText, setEditText] = useState(todo.description.short);
 
   const [commitToggle] =
     useMutation<TodoItemToggleMutation>(ToggleTodoMutation);
@@ -72,7 +76,7 @@ function TodoItem({ todo }: TodoItemProps) {
 
   const handleUpdate = () => {
     if (!editText.trim()) {
-      setEditText(todo.text);
+      setEditText(todo.description.short);
       setIsEditing(false);
       return;
     }
@@ -81,7 +85,7 @@ function TodoItem({ todo }: TodoItemProps) {
       variables: {
         input: {
           id: todo.id,
-          text: editText.trim(),
+          short: editText.trim(),
         },
       },
       onCompleted: () => {
@@ -91,7 +95,9 @@ function TodoItem({ todo }: TodoItemProps) {
         updateTodo: {
           todo: {
             id: todo.id,
-            text: editText.trim(),
+            description: {
+              short: editText.trim(),
+            },
           },
         },
       },
@@ -133,7 +139,7 @@ function TodoItem({ todo }: TodoItemProps) {
     if (e.key === "Enter") {
       handleUpdate();
     } else if (e.key === "Escape") {
-      setEditText(todo.text);
+      setEditText(todo.description.short);
       setIsEditing(false);
     }
   };
@@ -183,7 +189,7 @@ function TodoItem({ todo }: TodoItemProps) {
           role="button"
           tabIndex={0}
         >
-          {todo.text}
+          {todo.description.short}
         </span>
       )}
 
