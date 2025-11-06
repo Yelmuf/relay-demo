@@ -60,7 +60,11 @@ export const todoDb = {
     const result = db
       .prepare("INSERT INTO todos (text, completed) VALUES (?, 0)")
       .run(text);
-    return todoDb.getById(result.lastInsertRowid as number)!;
+    const newTodo = todoDb.getById(result.lastInsertRowid as number);
+    if (!newTodo) {
+      throw new Error("Failed to create todo");
+    }
+    return newTodo;
   },
 
   // Update todo text

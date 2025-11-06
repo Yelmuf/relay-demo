@@ -4,6 +4,9 @@ import { todoDb } from "./db.js";
 // Create the schema builder
 const builder = new SchemaBuilder({});
 
+// Utility function to convert SQLite integer to boolean
+const toBoolean = (value: number): boolean => value === 1;
+
 // Define the Todo type
 const TodoType = builder.objectRef<{
   id: number;
@@ -16,7 +19,7 @@ builder.objectType(TodoType, {
     id: t.exposeID("id"),
     text: t.exposeString("text"),
     completed: t.exposeBoolean("completed", {
-      resolve: (parent) => parent.completed === 1,
+      resolve: (parent) => toBoolean(parent.completed),
     }),
   }),
 });
