@@ -7,6 +7,7 @@
   background: #f9f9f9;
   border-radius: 8px;
   transition: all 0.3s;
+  cursor: pointer;
 }
 
 .todo-item:hover {
@@ -34,7 +35,6 @@
   flex: 1;
   font-size: 1rem;
   color: #333;
-  cursor: pointer;
 }
 
 .todo-item.completed .todo-text {

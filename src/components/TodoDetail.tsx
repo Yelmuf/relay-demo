@@ -15,7 +15,6 @@ const TodoDetailQuery = graphql`
       completed
       icon
       description {
-        short
         long
       }
     }
@@ -29,7 +28,6 @@ const UpdateTodoMutation = graphql`
         id
         icon
         description {
-          short
           long
         }
       }
@@ -51,11 +49,17 @@ function TodoDetail() {
     return null;
   }
 
-  const data = useLazyLoadQuery<TodoDetailQueryType>(TodoDetailQuery, { id });
+  const { todo } = useLazyLoadQuery<TodoDetailQueryType>(
+    TodoDetailQuery,
+    {
+      id,
+    },
+    {
+      fetchPolicy: "store-and-network",
+    }
+  );
   const [commitUpdate, isUpdating] =
     useMutation<TodoDetailUpdateMutation>(UpdateTodoMutation);
-
-  const todo = data.todo;
 
   if (!todo) {
     return (
@@ -70,28 +74,21 @@ function TodoDetail() {
     );
   }
 
-  const [icon, setIcon] = useState("");
-  const [longDescription, setLongDescription] = useState("");
-
-  useEffect(() => {
-    setIcon(todo.icon || "");
-    setLongDescription(todo.description.long || "");
-  }, [todo.icon, todo.description.long]);
-
   const handleClose = () => {
     navigate("/");
   };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const formData = new FormData(e.currentTarget);
 
     commitUpdate({
       variables: {
         input: {
           id: todo.id,
-          short: todo.description.short,
-          icon: icon.trim() || undefined,
-          long: longDescription.trim() || undefined,
+          icon: formData.get("icon")?.toString()?.trim() || undefined,
+          long:
+            formData.get("longDescription")?.toString()?.trim() || undefined,
         },
       },
       onError: (error) => {
@@ -117,7 +114,11 @@ function TodoDetail() {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="todo-detail-form">
+        <form
+          key={todo.id}
+          onSubmit={handleSubmit}
+          className="todo-detail-form"
+        >
           <div className="todo-detail-field">
             <label htmlFor="icon" className="todo-detail-label">
               Icon (emoji)
@@ -125,8 +126,9 @@ function TodoDetail() {
             <input
               id="icon"
               type="text"
-              value={icon}
-              onChange={(e) => setIcon(e.target.value)}
+              name="icon"
+              defaultValue={todo.icon ?? ""}
+              // onChange={(e) => setIcon(e.target.value)}
               placeholder="e.g., 🎯 📝 ✨"
               className="todo-detail-input"
               maxLength={MAX_ICON_LENGTH}
@@ -139,8 +141,8 @@ function TodoDetail() {
             </label>
             <textarea
               id="longDescription"
-              value={longDescription}
-              onChange={(e) => setLongDescription(e.target.value)}
+              name="longDescription"
+              defaultValue={todo.description.long || ""}
               placeholder="Add more details about this todo..."
               className="todo-detail-textarea"
               rows={5}

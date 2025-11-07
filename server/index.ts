@@ -89,7 +89,9 @@ const root = {
     if (!todo) {
       throw new Error(`Todo with id ${input.id} not found`);
     }
-    todo.description.short = input.short;
+    if (input.short !== undefined) {
+      todo.description.short = input.short;
+    }
     if (input.long !== undefined) {
       todo.description.long = input.long;
     }
@@ -139,7 +141,7 @@ app.all(
   createHandler({
     schema,
     rootValue: root,
-  }),
+  })
 );
 
 // Health check

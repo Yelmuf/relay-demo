@@ -1,4 +1,9 @@
-import { useState, KeyboardEvent, ChangeEvent } from "react";
+import {
+  useState,
+  KeyboardEvent,
+  ChangeEvent,
+  ChangeEventHandler,
+} from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
@@ -64,7 +69,9 @@ function TodoItem({ todo }: TodoItemProps) {
   const [commitDelete] =
     useMutation<TodoItemDeleteMutation>(DeleteTodoMutation);
 
-  const handleToggle = () => {
+  const handleToggle: ChangeEventHandler<HTMLInputElement> = (e) => {
+    e.stopPropagation();
+
     commitToggle({
       variables: {
         input: {
@@ -115,7 +122,7 @@ function TodoItem({ todo }: TodoItemProps) {
         updater: (store) => {
           const todos = store.getRoot().getLinkedRecords("todos") || [];
           const updatedTodos = todos.filter(
-            (t) => !!t && t.getDataID() !== todo.id,
+            (t) => !!t && t.getDataID() !== todo.id
           );
           store.getRoot().setLinkedRecords(updatedTodos, "todos");
         },
@@ -127,7 +134,7 @@ function TodoItem({ todo }: TodoItemProps) {
         optimisticUpdater: (store) => {
           const todos = store.getRoot().getLinkedRecords("todos") || [];
           const updatedTodos = todos.filter(
-            (t) => !!t && t.getDataID() !== todo.id,
+            (t) => !!t && t.getDataID() !== todo.id
           );
           store.getRoot().setLinkedRecords(updatedTodos, "todos");
         },
@@ -144,7 +151,7 @@ function TodoItem({ todo }: TodoItemProps) {
     }
   };
 
-  const handleClick = () => {
+  const openDetail = () => {
     if (!isEditing) {
       navigate(`/todo/${todo.id}`);
     }
@@ -158,11 +165,15 @@ function TodoItem({ todo }: TodoItemProps) {
   };
 
   return (
-    <div className={`todo-item ${todo.completed ? "completed" : ""}`}>
+    <div
+      className={`todo-item ${todo.completed ? "completed" : ""}`}
+      onClick={openDetail}
+    >
       <input
         type="checkbox"
         checked={todo.completed}
         onChange={handleToggle}
+        onClick={(e) => e.stopPropagation()}
         className="todo-checkbox"
       />
 
@@ -184,7 +195,6 @@ function TodoItem({ todo }: TodoItemProps) {
         <span
           className="todo-text"
           onDoubleClick={() => setIsEditing(true)}
-          onClick={handleClick}
           onKeyDown={handleTextKeyDown}
           role="button"
           tabIndex={0}

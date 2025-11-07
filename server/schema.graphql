@@ -41,7 +41,7 @@ type AddTodoPayload {
 
 input UpdateTodoInput {
   id: ID!
-  short: String!
+  short: String
   long: String
   icon: String
   clientMutationId: String
