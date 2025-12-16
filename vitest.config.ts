@@ -1,28 +1,28 @@
-import { defineConfig } from 'vitest/config';
-import react from '@vitejs/plugin-react';
-import quickpickle from 'quickpickle';
+import { defineConfig } from "vitest/config";
+import react from "@vitejs/plugin-react";
+import quickpickle from "quickpickle";
 
 export default defineConfig({
   plugins: [
     react({
       babel: {
-        plugins: ['relay'],
+        plugins: ["relay"],
       },
     }),
     quickpickle({
       worldConfig: {
-        playwright: {
-          launchOptions: {
-            headless: true,
-            args: ['--no-sandbox', '--disable-setuid-sandbox'],
-          },
-        },
+        slowMo: 200,
+        headless: false,
       },
     }),
   ],
   test: {
-    include: ['tests/**/*.feature'],
-    setupFiles: ['./tests/setup.ts'],
+    browser: {
+      name: "Chrome",
+      ui: true,
+    },
+    include: ["tests/**/*.feature"],
+    setupFiles: ["./tests/setup.ts"],
     testTimeout: 60000,
     hookTimeout: 30000,
   },
