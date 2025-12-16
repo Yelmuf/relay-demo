@@ -153,14 +153,14 @@ function TodoItem({ todo }: TodoItemProps) {
 
   const openDetail = () => {
     if (!isEditing) {
-      navigate(`/todo/${todo.id}`);
+      navigate({ search: `?id=${todo.id}` });
     }
   };
 
   const handleTextKeyDown = (e: KeyboardEvent<HTMLSpanElement>) => {
     if (!isEditing && (e.key === "Enter" || e.key === " ")) {
       e.preventDefault();
-      navigate(`/todo/${todo.id}`);
+      navigate({ search: `?id=${todo.id}` });
     }
   };
 

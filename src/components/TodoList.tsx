@@ -34,7 +34,7 @@ const AddTodoMutation = graphql`
   }
 `;
 
-function TodoList() {
+export function TodoList() {
   const data = useLazyLoadQuery<TodoListQueryType>(TodoListQuery, {});
   const [newTodoText, setNewTodoText] = useState("");
   const [commitAddTodo, isAddingTodo] =
@@ -121,5 +121,3 @@ function TodoList() {
     </div>
   );
 }
-
-export default TodoList;

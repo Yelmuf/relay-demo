@@ -1,10 +1,12 @@
-import { useState, FormEvent, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { FormEvent, Suspense, useCallback, useTransition } from "react";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { useLazyLoadQuery, useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import "./TodoDetail.css";
 import type { TodoDetailQuery as TodoDetailQueryType } from "./__generated__/TodoDetailQuery.graphql";
 import type { TodoDetailUpdateMutation } from "./__generated__/TodoDetailUpdateMutation.graphql";
+import { SyncContext, useIdFromSyncContext } from "../SyncContext";
+import { ErrorBoundary } from "react-error-boundary";
 
 const MAX_ICON_LENGTH = 10;
 
@@ -35,19 +37,8 @@ const UpdateTodoMutation = graphql`
   }
 `;
 
-function TodoDetail() {
-  const { id } = useParams<{ id: string }>();
+function TodoDetail({ id }: { id: string }) {
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!id) {
-      navigate("/");
-    }
-  }, [id, navigate]);
-
-  if (!id) {
-    return null;
-  }
 
   const { todo } = useLazyLoadQuery<TodoDetailQueryType>(
     TodoDetailQuery,
@@ -162,4 +153,50 @@ function TodoDetail() {
   );
 }
 
-export default TodoDetail;
+const TodoDetailConsumer = () => {
+  const id = useIdFromSyncContext();
+
+  return id ? (
+    <Suspense fallback={<div className="todo-detail-panel">Loading....</div>}>
+      <TodoDetail id={id} />
+    </Suspense>
+  ) : null;
+};
+
+const TodoDetailContainer = () => {
+  const [searchParams, setSeatchParams] = useSearchParams();
+
+  const id = searchParams.get("id");
+
+  // const navigate = useNavigate();
+
+  const [isPending, startTransition] = useTransition();
+
+  const navigateToId = useCallback(
+    (newId: string) => {
+      // startTransition(() => {
+      setSeatchParams((sp) => {
+        sp.set("id", newId);
+        return sp;
+      });
+      // });
+    },
+    [setSeatchParams]
+  );
+
+  return (
+    <SyncContext.Provider value={{ id: id || null, navigateToId }}>
+      <ErrorBoundary
+        fallback={
+          <div className="todo-detail-panel">Error loading todo details.</div>
+        }
+      >
+        {/* <Suspense fallback={<div className="loading">Loading...</div>}> */}
+        <TodoDetailConsumer />
+        {/* </Suspense> */}
+      </ErrorBoundary>
+    </SyncContext.Provider>
+  );
+};
+
+export default TodoDetailContainer;
