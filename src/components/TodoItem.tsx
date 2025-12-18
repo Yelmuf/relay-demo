@@ -1,4 +1,10 @@
-import { useState, KeyboardEvent, ChangeEvent } from "react";
+import {
+  useState,
+  KeyboardEvent,
+  ChangeEvent,
+  ChangeEventHandler,
+} from "react";
+import { useNavigate } from "react-router-dom";
 import { useMutation } from "react-relay";
 import { graphql } from "relay-runtime";
 import "./TodoItem.css";
@@ -8,8 +14,11 @@ import type { TodoItemDeleteMutation } from "./__generated__/TodoItemDeleteMutat
 
 interface Todo {
   id: string;
-  text: string;
   completed: boolean;
+  icon?: string | null;
+  description: {
+    short: string;
+  };
 }
 
 interface TodoItemProps {
@@ -32,7 +41,9 @@ const UpdateTodoMutation = graphql`
     updateTodo(input: $input) {
       todo {
         id
-        text
+        description {
+          short
+        }
       }
     }
   }
@@ -47,8 +58,9 @@ const DeleteTodoMutation = graphql`
 `;
 
 function TodoItem({ todo }: TodoItemProps) {
+  const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
-  const [editText, setEditText] = useState(todo.text);
+  const [editText, setEditText] = useState(todo.description.short);
 
   const [commitToggle] =
     useMutation<TodoItemToggleMutation>(ToggleTodoMutation);
@@ -57,7 +69,9 @@ function TodoItem({ todo }: TodoItemProps) {
   const [commitDelete] =
     useMutation<TodoItemDeleteMutation>(DeleteTodoMutation);
 
-  const handleToggle = () => {
+  const handleToggle: ChangeEventHandler<HTMLInputElement> = (e) => {
+    e.stopPropagation();
+
     commitToggle({
       variables: {
         input: {
@@ -69,7 +83,7 @@ function TodoItem({ todo }: TodoItemProps) {
 
   const handleUpdate = () => {
     if (!editText.trim()) {
-      setEditText(todo.text);
+      setEditText(todo.description.short);
       setIsEditing(false);
       return;
     }
@@ -78,7 +92,7 @@ function TodoItem({ todo }: TodoItemProps) {
       variables: {
         input: {
           id: todo.id,
-          text: editText.trim(),
+          short: editText.trim(),
         },
       },
       onCompleted: () => {
@@ -88,7 +102,9 @@ function TodoItem({ todo }: TodoItemProps) {
         updateTodo: {
           todo: {
             id: todo.id,
-            text: editText.trim(),
+            description: {
+              short: editText.trim(),
+            },
           },
         },
       },
@@ -106,7 +122,7 @@ function TodoItem({ todo }: TodoItemProps) {
         updater: (store) => {
           const todos = store.getRoot().getLinkedRecords("todos") || [];
           const updatedTodos = todos.filter(
-            (t) => !!t && t.getDataID() !== todo.id,
+            (t) => !!t && t.getDataID() !== todo.id
           );
           store.getRoot().setLinkedRecords(updatedTodos, "todos");
         },
@@ -118,7 +134,7 @@ function TodoItem({ todo }: TodoItemProps) {
         optimisticUpdater: (store) => {
           const todos = store.getRoot().getLinkedRecords("todos") || [];
           const updatedTodos = todos.filter(
-            (t) => !!t && t.getDataID() !== todo.id,
+            (t) => !!t && t.getDataID() !== todo.id
           );
           store.getRoot().setLinkedRecords(updatedTodos, "todos");
         },
@@ -126,23 +142,42 @@ function TodoItem({ todo }: TodoItemProps) {
     }
   };
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+  const handleInputKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       handleUpdate();
     } else if (e.key === "Escape") {
-      setEditText(todo.text);
+      setEditText(todo.description.short);
       setIsEditing(false);
     }
   };
 
+  const openDetail = () => {
+    if (!isEditing) {
+      navigate({ search: `?id=${todo.id}` });
+    }
+  };
+
+  const handleTextKeyDown = (e: KeyboardEvent<HTMLSpanElement>) => {
+    if (!isEditing && (e.key === "Enter" || e.key === " ")) {
+      e.preventDefault();
+      navigate({ search: `?id=${todo.id}` });
+    }
+  };
+
   return (
-    <div className={`todo-item ${todo.completed ? "completed" : ""}`}>
+    <div
+      className={`todo-item ${todo.completed ? "completed" : ""}`}
+      onClick={openDetail}
+    >
       <input
         type="checkbox"
         checked={todo.completed}
         onChange={handleToggle}
+        onClick={(e) => e.stopPropagation()}
         className="todo-checkbox"
       />
+
+      {todo.icon && <span className="todo-icon">{todo.icon}</span>}
 
       {isEditing ? (
         <input
@@ -152,13 +187,19 @@ function TodoItem({ todo }: TodoItemProps) {
             setEditText(e.target.value)
           }
           onBlur={handleUpdate}
-          onKeyDown={handleKeyDown}
+          onKeyDown={handleInputKeyDown}
           className="todo-edit-input"
           autoFocus
         />
       ) : (
-        <span className="todo-text" onDoubleClick={() => setIsEditing(true)}>
-          {todo.text}
+        <span
+          className="todo-text"
+          onDoubleClick={() => setIsEditing(true)}
+          onKeyDown={handleTextKeyDown}
+          role="button"
+          tabIndex={0}
+        >
+          {todo.description.short}
         </span>
       )}
 

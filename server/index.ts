@@ -6,6 +6,12 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
+// For the sake of the demo, we're not encoding this with base64
+const gqlId = (typename: string, id: string | number) => {
+  const VERSION = 1;
+  return `${VERSION}:${typename}:${id}`;
+};
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -15,20 +21,30 @@ const schemaString = fs.readFileSync(schemaPath, "utf-8");
 const schema = buildSchema(schemaString);
 
 // Type definitions
+interface TodoDescription {
+  short: string;
+  long?: string;
+}
+
 interface Todo {
   id: string;
-  text: string;
   completed: boolean;
+  icon?: string;
+  description: TodoDescription;
 }
 
 interface AddTodoInput {
-  text: string;
+  short: string;
+  long?: string;
+  icon?: string;
   clientMutationId?: string;
 }
 
 interface UpdateTodoInput {
   id: string;
-  text: string;
+  short: string;
+  long?: string;
+  icon?: string;
   clientMutationId?: string;
 }
 
@@ -44,9 +60,21 @@ interface ToggleTodoInput {
 
 // In-memory data store
 let todos: Todo[] = [
-  { id: "1", text: "Learn React 19", completed: false },
-  { id: "2", text: "Learn Relay", completed: false },
-  { id: "3", text: "Build a TODO app", completed: true },
+  {
+    id: gqlId("Todo", 1),
+    description: { short: "Learn React 19" },
+    completed: false,
+  },
+  {
+    id: gqlId("Todo", 2),
+    description: { short: "Learn Relay" },
+    completed: false,
+  },
+  {
+    id: gqlId("Todo", 3),
+    description: { short: "Build a TODO app" },
+    completed: true,
+  },
 ];
 
 let nextId = 4;
@@ -59,9 +87,13 @@ const root = {
 
   addTodo: ({ input }: { input: AddTodoInput }) => {
     const todo: Todo = {
-      id: String(nextId++),
-      text: input.text,
+      id: gqlId("Todo", nextId++),
+      description: {
+        short: input.short,
+        long: input.long,
+      },
       completed: false,
+      icon: input.icon,
     };
     todos.push(todo);
     return {
@@ -75,7 +107,15 @@ const root = {
     if (!todo) {
       throw new Error(`Todo with id ${input.id} not found`);
     }
-    todo.text = input.text;
+    if (input.short !== undefined) {
+      todo.description.short = input.short;
+    }
+    if (input.long !== undefined) {
+      todo.description.long = input.long;
+    }
+    if (input.icon !== undefined) {
+      todo.icon = input.icon;
+    }
     return {
       todo,
       clientMutationId: input.clientMutationId,
@@ -119,7 +159,7 @@ app.all(
   createHandler({
     schema,
     rootValue: root,
-  }),
+  })
 );
 
 // Health check

@@ -10,8 +10,11 @@ const TodoListQuery = graphql`
   query TodoListQuery {
     todos {
       id
-      text
       completed
+      icon
+      description {
+        short
+      }
     }
   }
 `;
@@ -21,14 +24,17 @@ const AddTodoMutation = graphql`
     addTodo(input: $input) {
       todo {
         id
-        text
         completed
+        icon
+        description {
+          short
+        }
       }
     }
   }
 `;
 
-function TodoList() {
+export function TodoList() {
   const data = useLazyLoadQuery<TodoListQueryType>(TodoListQuery, {});
   const [newTodoText, setNewTodoText] = useState("");
   const [commitAddTodo, isAddingTodo] =
@@ -41,7 +47,7 @@ function TodoList() {
     commitAddTodo({
       variables: {
         input: {
-          text: newTodoText.trim(),
+          short: newTodoText.trim(),
         },
       },
       onCompleted: (response) => {
@@ -115,5 +121,3 @@ function TodoList() {
     </div>
   );
 }
-
-export default TodoList;

@@ -1,4 +1,4 @@
-Feature: TODO Management
+Feature: TODOs Management
   As a user
   I want to manage my todos
   So that I can keep track of tasks
