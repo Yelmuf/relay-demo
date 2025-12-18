@@ -31,37 +31,35 @@ async function fetchGraphQL(text: string, variables: Variables): Promise<any> {
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-async function fetchRelay(
+async function fetchFn(
   params: RequestParameters,
-  variables: Variables,
-): Promise<any> {
-  console.log(
-    `fetching query ${params.name} with ${JSON.stringify(variables)}`,
+  variables: Variables
+): Promise<GraphQLResponse> {
+  console.debug(
+    `[fetchFn] querying ${params.name} with ${JSON.stringify(variables)}`
   );
 
   if (params.name === "TodoDetailQuery") {
-    await delay(1500); // artificial delay
-    // debugger;
+    await delay(1500);
   } else {
-    await delay(1000); // artificial delay
+    await delay(1000);
   }
 
-  return await fetchGraphQL(params.text!, variables);
+  const response = await fetchGraphQL(params.text!, variables);
+  console.debug(`[fetchFn] got response for query ${params.name}`, response);
+
+  return response;
 }
 
 const isSingularResponse = (
-  response: GraphQLResponse,
+  response: GraphQLResponse
 ): response is GraphQLSingularResponse => !Array.isArray(response);
-
-const logError = (message: string, meta: object) => {
-  console.error(message, { module: "graphql-client", ...meta });
-};
 
 const handleGraphQLErrors = (
   response: GraphQLResponse,
   sink: Sink<unknown>,
   operationName: string,
-  requestId: string,
+  requestId: string
 ): boolean => {
   if (!("errors" in response) || !response.errors) {
     return false;
@@ -69,14 +67,13 @@ const handleGraphQLErrors = (
 
   // Log errors for debugging
   try {
-    logError(`Received errors in the response`, {
-      // errors: JSON.stringify(response.errors, getCircularReplacer(), 2),
+    console.error(`Received errors in the response`, {
       category: "request-handler",
       operationName,
       requestId,
     });
   } catch (error) {
-    logError(`Received errors in the response`, {
+    console.error(`Received errors in the response`, {
       category: "request-handler",
       operationName,
       requestId,
@@ -115,7 +112,7 @@ const responseHandler =
       response,
       sink,
       operationName,
-      requestId,
+      requestId
     );
     if (hasFatalErrors) {
       return;
@@ -139,28 +136,8 @@ export type Fetcher = (
   request: RequestParameters,
   variables: Variables,
   cacheConfig?: CacheConfig,
-  requestId?: string,
+  requestId?: string
 ) => Promise<GraphQLResponse>;
-
-export type CacheConfigMetadata =
-  | {
-      live?: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        polling_interval: number;
-      };
-      analyticsHeaderData?: Record<string, unknown>;
-      skipBoardSpecificHeaders?: boolean;
-      signal?: AbortSignal;
-    }
-  | undefined;
-
-const isCacheConfigMetadata = (
-  metadata: unknown,
-): metadata is CacheConfigMetadata => {
-  return (
-    metadata !== null && typeof metadata === "object" && "live" in metadata
-  );
-};
 
 // Inspired by https://github.com/adeira/universe/blob/28fe9302025ef46269a51c582aa8c97ac9ede1b9/src/relay/src/createRequestHandler.js
 const createRequestHandler =
@@ -168,7 +145,7 @@ const createRequestHandler =
   (
     request: RequestParameters,
     variables: Variables,
-    cacheConfig: CacheConfig,
+    cacheConfig: CacheConfig
   ) => {
     const observable = Observable.create((sink) => {
       const requestId = cacheConfig.transactionId ?? generateRequestId();
@@ -182,34 +159,30 @@ const createRequestHandler =
         });
     });
 
-    const metadata = request.metadata;
-    const cacheConfigMetadata = isCacheConfigMetadata(metadata)
-      ? metadata
-      : null;
-
-    // support for @live_query(polling_interval: Int)
-    // see https://pb.dev/docs/graphql-documentation/request_polling/
-    const polling = cacheConfigMetadata?.live;
-
-    // Nah
-    // if (polling && polling.polling_interval > 0) {
-    //   return createPollingObservable(observable, polling.polling_interval);
-    // }
-
     return observable;
   };
 
 export default new Environment({
-  // network: Network.create(createRequestHandler(fetchRelay)),
-  network: Network.create(fetchRelay),
+  network: Network.create(createRequestHandler(fetchFn)),
+  // network: Network.create(fetchRelay),
   store: new Store(new RecordSource(), {
+    // gcReleaseBufferSize: 30,
     gcReleaseBufferSize: 0,
-    queryCacheExpirationTime: 0,
+    // queryCacheExpirationTime: 60 * 1000,
 
     // @ts-ignore This logger is not in TS types :\
-    log: (e) => console.debug(`[R-Store] ${e.name}`, e),
+    log: (e) => {
+      console.debug(`[Relay Store] ${e.name}`, e);
+    },
   }),
   relayFieldLogger: requiredFieldLogger,
   missingFieldHandlers,
-  log: (e) => console.debug(`[R] ${e.name}`, e),
+  log: (e) => {
+    console.debug(`[Relay Environment] ${e.name}`, e);
+
+    // This is where it starts
+    if (e.name === "execute.complete" && e.executeId === 100003) {
+      debugger;
+    }
+  },
 });

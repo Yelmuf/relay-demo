@@ -1,12 +1,12 @@
-import { FormEvent, Suspense, useCallback, useTransition } from "react";
-import { useParams, useNavigate, useSearchParams } from "react-router-dom";
+import { FormEvent, Suspense, useCallback } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import { useLazyLoadQuery, useMutation } from "react-relay";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { graphql } from "relay-runtime";
+import { SyncContext, useIdFromSyncContext } from "../SyncContext";
 import "./TodoDetail.css";
 import type { TodoDetailQuery as TodoDetailQueryType } from "./__generated__/TodoDetailQuery.graphql";
 import type { TodoDetailUpdateMutation } from "./__generated__/TodoDetailUpdateMutation.graphql";
-import { SyncContext, useIdFromSyncContext } from "../SyncContext";
-import { ErrorBoundary } from "react-error-boundary";
 
 const MAX_ICON_LENGTH = 10;
 
@@ -168,18 +168,12 @@ const TodoDetailContainer = () => {
 
   const id = searchParams.get("id");
 
-  // const navigate = useNavigate();
-
-  const [isPending, startTransition] = useTransition();
-
   const navigateToId = useCallback(
     (newId: string) => {
-      // startTransition(() => {
       setSeatchParams((sp) => {
         sp.set("id", newId);
         return sp;
       });
-      // });
     },
     [setSeatchParams]
   );
@@ -191,9 +185,9 @@ const TodoDetailContainer = () => {
           <div className="todo-detail-panel">Error loading todo details.</div>
         }
       >
-        {/* <Suspense fallback={<div className="loading">Loading...</div>}> */}
-        <TodoDetailConsumer />
-        {/* </Suspense> */}
+        <Suspense fallback={<div className="loading">Loading...</div>}>
+          <TodoDetailConsumer />
+        </Suspense>
       </ErrorBoundary>
     </SyncContext.Provider>
   );

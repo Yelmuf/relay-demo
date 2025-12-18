@@ -3,5 +3,4 @@
 import "@quickpickle/playwright/world";
 
 // Import step definitions
-import "./features/simple.steps";
-import "./features/todo.steps";
+import "./features/common.steps";

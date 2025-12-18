@@ -10,6 +10,22 @@ Given("I am on the TODO app homepage", async function (world) {
   await world.page.waitForLoadState("networkidle");
 });
 
+Given("I am on the detail page for todo {int}", async function (world, id) {
+  await world.page.goto(`http://localhost:3000/?id=1:Todo:${id}`);
+  await world.page.waitForLoadState("networkidle");
+});
+
+Given("I wait {int} seconds", async function (world, seconds) {
+  await world.page.waitForTimeout(seconds * 1000);
+});
+
+Then("I should see a todo detail", async function (world) {
+  await expect(world.page.locator(".todo-detail-panel")).toBeVisible();
+  await expect(world.page.locator(".todo-detail-panel")).not.toHaveText(
+    "Loading..."
+  );
+});
+
 // View empty todo list
 Then("I should see {string}", async function (world, text) {
   await expect(world.page.getByText(text)).toBeVisible();
@@ -19,7 +35,7 @@ Then("I should see {string}", async function (world, text) {
 When("I enter {string} in the todo input", async function (world, todoText) {
   await world.page.fill(
     'input[placeholder="What needs to be done?"]',
-    todoText,
+    todoText
   );
 });
 
@@ -33,9 +49,9 @@ Then(
   "I should see {string} in the todo list",
   async function (world, todoText) {
     await expect(
-      world.page.locator(".todo-text", { hasText: todoText }).first(),
+      world.page.locator(".todo-text", { hasText: todoText }).first()
     ).toBeVisible();
-  },
+  }
 );
 
 Then("the active count should be {int}", async function (world, count) {
@@ -58,7 +74,7 @@ Then("the completed count should be {int}", async function (world, count) {
 Given("I have added a todo {string}", async function (world, todoText) {
   await world.page.fill(
     'input[placeholder="What needs to be done?"]',
-    todoText,
+    todoText
   );
   await world.page.click('button:has-text("Add Todo")');
   await world.page.waitForLoadState("networkidle");
@@ -74,7 +90,7 @@ When(
       .first();
     await todoItem.locator('input[type="checkbox"]').click();
     await world.page.waitForLoadState("networkidle");
-  },
+  }
 );
 
 Then(
@@ -86,7 +102,7 @@ Then(
       })
       .first();
     await expect(todoItem).toHaveClass(/completed/);
-  },
+  }
 );
 
 // Edit a todo
@@ -112,9 +128,9 @@ Then(
   async function (world, todoText) {
     // Wait for the element to be removed from the DOM
     await expect(
-      world.page.locator(".todo-text", { hasText: todoText }),
+      world.page.locator(".todo-text", { hasText: todoText })
     ).toHaveCount(0);
-  },
+  }
 );
 
 // Delete a todo
@@ -135,7 +151,7 @@ When(
     });
 
     await deleteButton.click();
-  },
+  }
 );
 
 When("I confirm the deletion", async function (world) {
@@ -151,7 +167,7 @@ When("I add the following todos:", async function (world, dataTable) {
     const todoText = row[0];
     await world.page.fill(
       'input[placeholder="What needs to be done?"]',
-      todoText,
+      todoText
     );
     await world.page.click('button:has-text("Add Todo")');
     await world.page.waitForLoadState("networkidle");
@@ -164,4 +180,8 @@ Then("I should see {int} active todos", async function (world, count) {
     .first()
     .textContent();
   expect(statsText).toContain(`${count} active`);
+});
+
+Then("I should not see {string} text", async function (world, text) {
+  await expect(world.page.getByText(text)).not.toBeVisible();
 });

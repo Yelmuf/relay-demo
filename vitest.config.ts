@@ -11,9 +11,9 @@ export default defineConfig({
     }),
     quickpickle({
       worldConfig: {
-        slowMo: 200,
         headless: false,
       },
+      stepTimeout: 6000,
     }),
   ],
   test: {

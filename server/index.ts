@@ -6,6 +6,12 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
+// For the sake of the demo, we're not encoding this with base64
+const gqlId = (typename: string, id: string | number) => {
+  const VERSION = 1;
+  return `${VERSION}:${typename}:${id}`;
+};
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -54,9 +60,21 @@ interface ToggleTodoInput {
 
 // In-memory data store
 let todos: Todo[] = [
-  { id: "1", description: { short: "Learn React 19" }, completed: false },
-  { id: "2", description: { short: "Learn Relay" }, completed: false },
-  { id: "3", description: { short: "Build a TODO app" }, completed: true },
+  {
+    id: gqlId("Todo", 1),
+    description: { short: "Learn React 19" },
+    completed: false,
+  },
+  {
+    id: gqlId("Todo", 2),
+    description: { short: "Learn Relay" },
+    completed: false,
+  },
+  {
+    id: gqlId("Todo", 3),
+    description: { short: "Build a TODO app" },
+    completed: true,
+  },
 ];
 
 let nextId = 4;
@@ -69,7 +87,7 @@ const root = {
 
   addTodo: ({ input }: { input: AddTodoInput }) => {
     const todo: Todo = {
-      id: String(nextId++),
+      id: gqlId("Todo", nextId++),
       description: {
         short: input.short,
         long: input.long,
