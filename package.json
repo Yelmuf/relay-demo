@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "vite",
+    "dev": "npm run relay; concurrently --kill-others --names \"server,client\" \"pnpm run server\" \"vite\"",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "server": "tsx server/index.ts",
@@ -44,6 +44,7 @@
     "@types/relay-runtime": "^19.0.3",
     "@vitejs/plugin-react": "^4.7.0",
     "babel-plugin-relay": "^20.1.1",
+    "concurrently": "^9.2.1",
     "quickpickle": "^1.10.1",
     "relay-compiler": "^20.1.1",
     "tsx": "^4.21.0",

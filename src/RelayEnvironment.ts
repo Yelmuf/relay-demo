@@ -15,7 +15,7 @@ import { missingFieldHandlers } from "./missing-field-handlers";
 import { requiredFieldLogger } from "./required-field-logger";
 
 async function fetchGraphQL(text: string, variables: Variables): Promise<any> {
-  const response = await fetch("http://localhost:4000/graphql", {
+  const response = await fetch("/graphql", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -182,7 +182,7 @@ export default new Environment({
 
     // This is where it starts
     if (e.name === "execute.complete" && e.executeId === 100003) {
-      debugger;
+      // debugger;
     }
   },
 });

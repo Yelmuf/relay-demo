@@ -19,45 +19,15 @@ export const requiredFieldLogger: RelayFieldLogger = (event) => {
   // https://relay.dev/docs/next/api-reference/field-logger/
   switch (kind) {
     case "missing_required_field.log":
-      logWarning(
-        `Missing value for field marked as non-nullable with @required(action: LOG)`,
-        {
-          fieldPath: event.fieldPath,
-          owner: event.owner,
-          category: kind,
-        }
-      );
-      break;
     case "missing_required_field.throw":
-      logError(
-        `Missing value for field marked as non-nullable with @required(action: THROW)`,
-        {
-          fieldPath: event.fieldPath,
-          owner: event.owner,
-          category: kind,
-        }
-      );
-      break;
     case "missing_expected_data.log":
-      // logWarning(
-      //   `No value for field in store although expected by the parent query`,
-      //   {
-      //     fieldPath: event.fieldPath,
-      //     owner: event.owner,
-      //     category: kind,
-      //   }
-      // );
       console.warn(`${kind} | ${event.owner} > ${event.fieldPath}`);
       break;
     case "missing_expected_data.throw":
-      logError(
-        `No value for field in store within @throwOnFieldError fragment`,
-        {
-          fieldPath: event.fieldPath,
-          owner: event.owner,
-          category: kind,
-          handled: event.handled,
-        }
+      console.warn(
+        `${kind} | (${event.handled ? "" : "un"}handled) | ${event.owner} > ${
+          event.fieldPath
+        }`
       );
       break;
     case "relay_resolver.error":
