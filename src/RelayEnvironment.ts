@@ -14,10 +14,10 @@ import { delay, fetchGraphQL } from "./utils";
 
 async function fetchFn(
   params: RequestParameters,
-  variables: Variables
+  variables: Variables,
 ): Promise<GraphQLResponse> {
   console.debug(
-    `[fetchFn] querying ${params.name} with ${JSON.stringify(variables)}`
+    `[fetchFn] querying ${params.name} with ${JSON.stringify(variables)}`,
   );
 
   if (params.name === "TodoDetailQuery") {

@@ -13,7 +13,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:ui": "vitest --ui"
+    "test:ui": "vitest --ui",
+    "test:unit": "vitest --config vitest.happydom.config.ts"
   },
   "keywords": [],
   "author": "",
@@ -35,6 +36,9 @@
     "@babel/core": "^7.28.5",
     "@playwright/test": "^1.57.0",
     "@quickpickle/playwright": "^1.0.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.1",
+    "@testing-library/user-event": "^14.6.1",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/node": "^24.10.4",
@@ -45,6 +49,7 @@
     "@vitejs/plugin-react": "^4.7.0",
     "babel-plugin-relay": "^20.1.1",
     "concurrently": "^9.2.1",
+    "happy-dom": "^20.0.11",
     "quickpickle": "^1.10.1",
     "relay-compiler": "^20.1.1",
     "tsx": "^4.21.0",
