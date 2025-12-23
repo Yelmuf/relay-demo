@@ -1,16 +1,8 @@
 // eslint-disable-next-line @productboard/custom-rules/ban-imports
 import type { RelayFieldLogger } from "relay-runtime";
 
-const logError = (message: string, meta: object) => {
-  console.error(message, { module: "graphql-client", ...meta });
-};
-
-const logWarning = (message: string, meta: object) => {
-  console.warn(message, { module: "graphql-client", ...meta });
-};
-
 const exhaustiveCheck = (kind: never) => {
-  logError("Unknown type of requiredFieldLogger", { kind });
+  console.error("Unknown type of requiredFieldLogger", { kind });
 };
 
 export const requiredFieldLogger: RelayFieldLogger = (event) => {
