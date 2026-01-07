@@ -8,28 +8,23 @@ How to reproduce:
   ```bash
   pnpm install
   ```
-- Start server with GQL
-  ```bash
-  pnpm run server
-  ```
-- Start FE app
+- Run Relay compiler and then start the app
   ```bash
   pnpm run dev
   ```
 - Go to http://localhost:3000/?id=1:Todo:1
-- Observe todos list crash when `TodoDetailQuery` finishes
+- Observe todos list crash when `TodoDetailQuery` finishes:
+  
+  <video src="https://github.com/user-attachments/assets/346ab638-ca95-4f21-a98c-c33d76a6ab08">
+
 
 This scenario is duplicated in tests:
 
-- Start server with GQL
-  ```bash
-  pnpm run server
-  ```
-- Start FE app
+- Start FE and BE apps
   ```bash
   pnpm run dev
   ```
-- Run tests
+- Run failing test that simulates the described bug from the above
   ```bash
-  pnpm run test
+  pnpm run test:unit
   ```
