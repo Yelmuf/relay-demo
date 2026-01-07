@@ -1,5 +1,7 @@
 # relay-demo
 
+Codesandbox: https://codesandbox.io/p/github/Yelmuf/relay-demo/main
+
 ## Demo of React UI crashing on concurrent queries resolution in Relay
 
 How to reproduce:
