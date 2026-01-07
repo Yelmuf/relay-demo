@@ -1,0 +1,71 @@
+{
+  // These tasks will run in order when initializing your CodeSandbox project.
+  "setupTasks": [
+    {
+      "name": "Installing Dependencies",
+      "command": "pnpm install"
+    }
+  ],
+
+  // These tasks can be run from CodeSandbox. Running one will open a log in the app.
+  "tasks": {
+    "dev": {
+      "name": "dev",
+      "command": "pnpm dev",
+      "runAtStart": true,
+      "preview": {
+        "port": 3000
+      }
+    },
+    "build": {
+      "name": "build",
+      "command": "pnpm build",
+      "runAtStart": false
+    },
+    "preview": {
+      "name": "preview",
+      "command": "pnpm preview",
+      "runAtStart": false
+    },
+    "server": {
+      "name": "server",
+      "command": "pnpm server",
+      "runAtStart": false
+    },
+    "relay": {
+      "name": "relay",
+      "command": "pnpm relay",
+      "runAtStart": false
+    },
+    "start": {
+      "name": "start",
+      "command": "pnpm start",
+      "runAtStart": false
+    },
+    "typecheck": {
+      "name": "typecheck",
+      "command": "pnpm typecheck",
+      "runAtStart": false
+    },
+    "test": {
+      "name": "test",
+      "command": "pnpm test",
+      "runAtStart": false
+    },
+    "test:watch": {
+      "name": "test:watch",
+      "command": "pnpm test:watch",
+      "runAtStart": false
+    },
+    "test:ui": {
+      "name": "test:ui",
+      "command": "pnpm test:ui",
+      "runAtStart": false
+    },
+    "test:unit": {
+      "name": "test:unit",
+      "command": "pnpm test:unit",
+      "runAtStart": false
+    }
+  }
+}
